@@ -15,7 +15,7 @@ improve the recommendation algorithm by 10%. The winners were announced in 2009.
 
 ## Project Goal
 
-We are accessing the MovieLens dataset which consists of 100k ratings on 3,900 movies from 6,040 MovieLens users. Our goals include predicting movie rating that helps more accurately provide personalized content for the modern consumers.
+We are accessing the MovieLens dataset which consists of 100k ratings on 3,900 movies from 6,040 MovieLens users. Our goals include predicting movie rating, one step further, predict movie rating helps more accurately provide personalized content for the modern consumers.
 
 # Project Planning
 Plan -> Acquire -> Prepare -> Explore -> Model & Evaluate -> Deliver
