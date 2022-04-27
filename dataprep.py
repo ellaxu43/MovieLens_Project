@@ -44,7 +44,6 @@ def wrangle_movie():
                                             "Children's": "Children",}) 
     
     full_rating.columns= full_rating.columns.str.lower()
-    full_rating['gender'] = full_rating.gender.map({'F': 1, 'M': 0})
     full_rating.release_date = full_rating.release_date.astype('datetime64[ns]')
     full_rating.release_date.fillna(full_rating.release_date.median(), inplace=True)
 
@@ -76,4 +75,26 @@ def prep_movie_rating():
     
     full = pd.merge(full, genre, right_on="movie_title", left_on="movie_title", how ="left")#.drop('movie_title', axis=1)
     full = full.groupby('movie_title').first()
+    female = full_rating[full_rating['gender'] == 'F']
+    female= female.groupby('movie_title').gender.count().sort_values(ascending=False)
+    female = pd.DataFrame(female).reset_index()
+    female = female.rename(columns = {"gender": "female_count"}) 
+    
+    male = full_rating[full_rating['gender'] == 'M']
+    male= male.groupby('movie_title').gender.count().sort_values(ascending=False)
+    male = pd.DataFrame(male).reset_index()
+    male = male.rename(columns = {"gender": "male_count"}) 
+    
+    gender_full= pd.merge(female, male, right_on="movie_title", left_on="movie_title", how ="outer")#.drop('movie_title', axis=1)
+    gender_full['female_count'] = gender_full['female_count'].fillna(0)
+    gender_full['male_count'] = gender_full['male_count'].fillna(0)
+    full = pd.merge(full, gender_full, right_on="movie_title", left_on="movie_title", how ="left")#.drop('movie_title', axis=1)
+    
+    full_rating['year'] = pd.DatetimeIndex(full_rating['release_date']).year
+    date = full_rating.groupby('movie_title').agg({'year':'first'})
+    date = pd.DataFrame(date).reset_index()
+    date = date.rename(columns = {0: "date",}) 
+    
+    full = pd.merge(full, date, right_on="movie_title", left_on="movie_title", how ="left")#.drop('movie_title', axis=1)
+    
     return full
