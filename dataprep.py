@@ -5,6 +5,7 @@ import os
 import zipfile
 
 def get_movie_data():
+    '''This function is to unzip the dataset'''
     r_cols = ['user_id', 'movie_id', 'rating', 'unix_timestamp']
     with zipfile.ZipFile("ml-100k.zip") as z:
         with z.open("ml-100k/u1.base") as f:
@@ -34,6 +35,8 @@ def get_movie_data():
 
 
 def wrangle_movie(): 
+    ''' This function will clean the data such as merge different tables, drop unnecessary columns, rename the columns
+     and full the N/A columns'''
     rating_full, item, user = get_movie_data()
     user_rating = pd.merge(rating_full, user, left_on="user_id", right_on="user id").drop('user id', axis=1)
     full_rating = pd.merge(user_rating, item, left_on="movie_id", right_on="movie id").drop('movie id', axis=1)
@@ -52,6 +55,7 @@ def wrangle_movie():
 
 
 def prep_movie_rating(): 
+    '''This function aggregate all columns in a way only get mean features for each movie, such as mean male counts that viewed the movie, the mean age of the rater for a movie''' 
     full_rating =wrangle_movie()
     most_rated = full_rating.groupby('movie_title').size().sort_values(ascending=False)
     most_rated = pd.DataFrame(most_rated).reset_index()
